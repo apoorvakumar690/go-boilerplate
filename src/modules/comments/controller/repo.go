@@ -7,9 +7,7 @@ import (
 
 // CommentRepoInterface ...
 type CommentRepoInterface interface {
-	Get(query string) ([]*User, error)
-	GetOne(id string) (*User, error)
-	GetAll() ([]*User, error)
+	GetCommentsByIdea(query string) ([]*User, error)
 	Insert(u User) error
 }
 

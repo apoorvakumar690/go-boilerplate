@@ -16,7 +16,7 @@ func bindRoutes(router *gin.Engine, deps *shared.Deps) {
 	service := likes.NewLikeService(deps.Config, deps.Database)
 	userAPI := router.Group("/api/sa")
 	{
-		userAPI.POST("/like", service.insert)
-		userAPI.GET("/getLike/:uuid", service.getAll)
+		userAPI.POST("/like", service.likePost)
+		userAPI.GET("/getLike/:uuid", service.getLikes)
 	}
 }

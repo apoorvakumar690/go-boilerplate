@@ -16,9 +16,9 @@ func bindRoutes(router *gin.Engine, deps *shared.Deps) {
 	service := comments.NewCommentsService(deps.Config, deps.Database)
 	userAPI := router.Group("/api/sa")
 	{
-		userAPI.POST("/comment", service.insert)
-		userAPI.DELETE("/comment/delete", service.getAll)
-		userAPI.PUT("/comment/edit", service.insert)
-		userAPI.POST("/comment/report-spam", service.getAll)
+		userAPI.POST("/comment", service.commentPost)
+		userAPI.DELETE("/comment/delete", service.commentDel)
+		userAPI.PUT("/comment/edit", service.commentEdit)
+		userAPI.POST("/comment/report-spam", service.reportSpam)
 	}
 }

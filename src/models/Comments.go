@@ -29,6 +29,7 @@ type Comment struct {
 	CreatedAt 	 time.Time 			`bson:"created_at"`
 }
 
+
 func NewComment() *Comment {
 	return &Comment{
 		uuid: shortuuid.New(),

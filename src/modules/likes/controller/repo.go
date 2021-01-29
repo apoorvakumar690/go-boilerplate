@@ -7,9 +7,7 @@ import (
 
 // LikeRepoInterface ...
 type LikeRepoInterface interface {
-	Get(query string) ([]*User, error)
-	GetOne(id string) (*User, error)
-	GetAll() ([]*User, error)
+	GetLikesByIdea(query string) ([]*User, error)
 	Insert(u User) error
 }
 

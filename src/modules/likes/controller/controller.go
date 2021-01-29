@@ -2,13 +2,12 @@ package likes
 
 import (
 	"net/http"
+	"strconv"
 
-	"go-boilerplate-api/apis/http/utils"
 	"go-boilerplate-api/config"
 	"go-boilerplate-api/pkg/clients/db"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ralstan-vaz/go-errors"
 )
 
 // Service contains the methods required to perfom operation's on users
@@ -22,33 +21,31 @@ func NewLikeService(conf config.IConfig, db *db.Instances) *Service {
 	return &Service{like: likeService}
 }
 
-func (service *Service) getLikesByIdea(ctx *gin.Context) {
-	var err error
-	defer utils.HandleError(ctx, &err)
+func (service *Service) getLikes(ctx *gin.Context) {
 
-	ideaID := ctx.Param("uuid")
-	likes, err := service.like.GetLikesByIdea(ideaID)
+	ideaUUID := ctx.Param("uuid")
+	perPage := strconv.Atoi(ctx.DefaultQuery("perPage", "50"))
+	page := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	likes, err := service.like.GetLikesByIdea()
+
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Something went wrong")
 		return
 	}
 
-	ctx.JSON(http.StatusOK, likes)
 }
 
-func (service *Service) insert(ctx *gin.Context) {
-	var err error
-	defer utils.HandleError(ctx, &err)
+type likeContentSchema struct {
+	LikeType         string `form:"likeType" json:"likeType" xml:"likeType"  binding:"required"`
+	LikeDislikeValue string `form:"likeDislikeValue" json:"likeDislikeValue" xml:"likeDislikeValue" binding:"required"`
+	UUID             string `form:"uuid" json:"uuid" xml:"uuid" binding:"uuid"`
+}
 
-	var like likes.SaSoftAction
-	if err = ctx.ShouldBindJSON(&like); err != nil {
-		err = errors.NewBadRequest("Could not bind request to model").SetCode("APIS.HTTP.USER.REQUEST_BIND_FAILD")
+func (service *Service) likePost(ctx *gin.Context) {
+
+	var reqBody likeContentSchema
+	if err := c.ShouldBindJSON(&reqBody); err != nil {
+		c.JSON(http.StatusBadRequest, "Request is improper")
 		return
 	}
-
-	err = service.like.Insert(like)
-	if err != nil {
-		return
-	}
-
-	ctx.JSON(http.StatusOK, nil)
 }
